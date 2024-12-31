@@ -11,24 +11,44 @@ class StateProvider extends Component {
             query: '',
             mode: MODE_CREATE,
             filter: FILTER_ALL,
-            list: getAll()
+            list: getAll(),
+            sortBy: 'dueDate', 
+            sortOrder:'asc',
+            currentTask:null
         }
     }
 
     render() {
         let children = wrapChildrenWith(this.props.children, {
             data: this.state,
-            actions: objectWithOnly(this, ['addNew', 'changeFilter', 'changeStatus', 'changeMode', 'setSearchQuery'])
+            actions: objectWithOnly(this, ['addNew', 'changeFilter', 'changeStatus', 'changeMode', 'setSearchQuery','changeSort', 'editTask'])
         });
 
         return <div>{children}</div>;
     }
 
-    addNew(text) {
-        let updatedList = addToList(this.state.list, {text, completed: false});
-
-        this.setState({list: updatedList});
+    addNew(text, priority, dueDate) {
+        const newTask = {
+            text,
+            completed: false,
+            priority,
+            dueDate: new Date(dueDate), // Store as Date object for sorting
+            id: Date.now() // Generate unique ID based on timestamp
+        };
+        let updatedList = addToList(this.state.list, newTask);
+        this.setState({ list: updatedList });
     }
+
+    // Edit an existing task
+    editTask(id, newText, newPriority, newDueDate) {
+        let updatedList = this.state.list.map(task => {
+            if (task.id === id) {
+                return { ...task, text: newText, priority: newPriority, dueDate: new Date(newDueDate) };
+            }
+            return task;
+        });
+        this.setState({ list: updatedList, currentTask: null });
+    }
 
     changeFilter(filter) {
         this.setState({filter});
@@ -46,6 +66,9 @@ class StateProvider extends Component {
 
     setSearchQuery(text) {
         this.setState({query: text || ''});
+    }
+    changeSort(sortBy, sortOrder) {
+        this.setState({sortBy, sortOrder});
     }
 }
 

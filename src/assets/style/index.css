@@ -124,3 +124,25 @@ footer .buttons {
     border: 1px solid rgba(229, 229, 229, 0.5);
     color: #888;
 }
+.priority {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.priority-high {
+    color: red;
+}
+
+.priority-medium {
+    color: orange;
+}
+
+.priority-low {
+   color: green;
+}
+due-date {
+    font-style: italic;
+    margin-left: 10px;
+    color: #555;
+}
+
